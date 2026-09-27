@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+Favorites
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+<h1>
+Favorites
+</h1>
+<div class="row g-3">
+{% for x in favorites %}
+<div class="col-md-4">
+<div class="card p-3 text-center">
+<img src="{{ x.spriteUrl }}" height="140">
+<h4>
+{{ x.pokemonName }}
+</h4>
+<form method="post" action="{{ url_for('main.favorite',pokemon_id=x.pokemonId) }}">
+<input type="hidden" name="action" value="remove">
+<button class="btn btn-outline-danger">
+Remove
+</button>
+</form>
+</div>
+</div>
+{% else %}
+<p class="text-secondary">
+No favorites yet.
+</p>
+{% endfor %}
+</div>
+</div>
+{% endblock %}

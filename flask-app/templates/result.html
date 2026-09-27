@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ pokemon.name }}{% endblock %}
+{% block content %}
+<section class="page-shell">
+  <a href="{{ url_for('main.home') }}" class="eyebrow d-inline-block mb-4">← Back to search</a>
+  <header class="result-header">
+    <div><div class="eyebrow">Pokédex entry <span class="dex-number">#{{ '%04d'|format(pokemon.id) }}</span></div><h1>{{ pokemon.name }}</h1><div class="type-row mt-2">{% for t in pokemon.types %}<span class="type-badge">{{ t }}</span>{% endfor %}</div></div>
+    {% if user %}<form method="post" action="{{ url_for('main.favorite', pokemon_id=pokemon.id) }}"><input type="hidden" name="name" value="{{ pokemon.name }}"><input type="hidden" name="sprite" value="{{ pokemon.image_front or '' }}"><button class="btn btn-outline-warning" type="submit">☆ Save favorite</button></form>{% endif %}
+  </header>
+  <div class="detail-grid">
+    <div>
+      <div class="card art-panel"><img class="pokemon-img" src="{{ pokemon.image_hd or pokemon.image_front or url_for('static', filename='pokemon-placeholder.svg') }}" alt="{{ pokemon.name }} official artwork" loading="lazy"><div class="meta-pills"><span>Height · {{ (pokemon.height / 10)|round(1) }} m</span><span>Weight · {{ (pokemon.weight / 10)|round(1) }} kg</span></div>{% if pokemon.cry %}<audio class="w-100 mt-3" controls preload="none" aria-label="{{ pokemon.name }} cry"><source src="{{ pokemon.cry }}"></audio>{% endif %}</div>
+      {% if pokemon.evolution %}<div class="card sub-card"><h3 class="section-heading">Evolution</h3><div class="evolution-list">{% for e in pokemon.evolution %}{% if not loop.first %}<span class="evo-arrow" aria-hidden="true">→</span>{% endif %}<div class="evolution-item"><img src="{{ e.sprite }}" alt=""><div>{{ e.name }}</div></div>{% endfor %}</div></div>{% endif %}
+      <div class="card sub-card"><div class="eyebrow">Species details</div><div class="d-flex justify-content-between mt-3"><span class="text-secondary">Color</span><b class="text-capitalize">{{ pokemon.color }}</b></div><div class="d-flex justify-content-between mt-2"><span class="text-secondary">Habitat</span><b class="text-capitalize">{{ pokemon.habitat }}</b></div></div>
+    </div>
+    <div>
+      <div class="card"><h2 class="section-heading">Base stats</h2>{% for name,val in pokemon.stats.items() %}<div class="stat-row"><div class="stat-label"><span>{{ name|replace('-', ' ') }}</span><b>{{ val }}</b></div><div class="stat-bar"><span style="width:{{ [val / 2.55, 100]|min }}%"></span></div></div>{% endfor %}</div>
+      <div class="card sub-card"><h2 class="section-heading">Abilities</h2>{% for a in pokemon.abilities %}<div class="mb-3"><b class="text-capitalize">{{ a.name|replace('-', ' ') }}</b><p class="text-secondary mb-0 mt-1">{{ a.description }}</p></div>{% else %}<p class="text-secondary">No ability data available.</p>{% endfor %}</div>
+      <div class="card sub-card"><h2 class="section-heading">Moves</h2><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Move</th><th>Type</th><th>Power</th><th>Accuracy</th><th>PP</th></tr></thead><tbody>{% for m in pokemon.moves %}<tr><td class="text-capitalize">{{ m.name|replace('-', ' ') }}</td><td class="text-capitalize">{{ m.type or '—' }}</td><td>{{ m.power or '—' }}</td><td>{% if m.accuracy %}{{ m.accuracy }}%{% else %}—{% endif %}</td><td>{{ m.pp or '—' }}</td></tr>{% else %}<tr><td colspan="5" class="text-secondary">No move data available.</td></tr>{% endfor %}</tbody></table></div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

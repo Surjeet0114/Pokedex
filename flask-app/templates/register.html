@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+Register
+{% endblock %}
+{% block content %}
+<div class="container py-5">
+<div class="row justify-content-center">
+<div class="col-md-5">
+<div class="card p-4">
+<h2>
+Create account
+</h2>
+{% if error %}
+<div class="alert alert-danger">
+{{ error }}
+</div>
+{% endif %}
+<form method="post">
+<input class="form-control mb-3" name="username" placeholder="Username" minlength="3" required>
+<input class="form-control mb-3" type="email" name="email" placeholder="Email" required>
+<input class="form-control mb-3" type="password" name="password" placeholder="Password" minlength="8" required>
+<button class="btn btn-warning w-100">
+Register
+</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

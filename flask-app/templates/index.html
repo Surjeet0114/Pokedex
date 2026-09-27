@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Explore{% endblock %}
+{% block content %}
+<section class="page-shell hero">
+  <div class="eyebrow">Your field guide to Pokémon</div>
+  <h1>Every Pokémon has a story.</h1>
+  <p>Look up a Pokémon to explore its type, abilities, stats, moves and evolution. Start with a name or Pokédex number.</p>
+  {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+  <div class="hero-grid">
+    <div class="search-panel">
+      <div class="eyebrow mb-3">Pokémon lookup</div>
+      <form method="post" action="{{ url_for('main.search') }}">
+        <label class="visually-hidden" for="pokemon-search">Pokémon name or number</label>
+        <div class="input-group input-group-lg">
+          <input id="pokemon-search" class="form-control" name="pokemon" value="{{ query|default('') }}" placeholder="Try Pikachu or 25" autocomplete="off" required>
+          <button class="btn btn-warning px-4" type="submit">Search</button>
+        </div>
+      </form>
+      <div class="mono mt-3">Over 1,000 Pokémon to discover</div>
+    </div>
+    <div class="card quick-card">
+      <div class="eyebrow">Make it yours</div>
+      <p>Save favorites and revisit your recent searches whenever you sign in.</p>
+      {% if user %}<a href="{{ url_for('main.favorites') }}">Open your Pokédex →</a>{% else %}<a href="{{ url_for('main.register') }}">Create a free account →</a>{% endif %}
+    </div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top border-secondary-subtle">
+    <span class="eyebrow">Ready to explore?</span><a href="{{ url_for('main.compare') }}">Compare two Pokémon →</a>
+  </div>
+</section>
+{% endblock %}
