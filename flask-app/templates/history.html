@@ -1,57 +1,38 @@
 {% extends 'base.html' %}
-{% block title %}
-History
-{% endblock %}
+{% block title %}Search history{% endblock %}
 {% block content %}
-<div class="container py-5">
-<h1>
-Search History
-</h1>
-<div class="card p-3">
-<div class="table-responsive">
-<table class="table table-dark">
-<thead>
-<tr>
-<th>
-Pokémon
-</th>
-<th>
-ID
-</th>
-<th>
-Types
-</th>
-<th>
-Time
-</th>
-</tr>
-</thead>
-<tbody>
-{% for x in history %}
-<tr>
-<td>
-{{ x.pokemonName }}
-</td>
-<td>
-{{ x.pokemonId }}
-</td>
-<td>
-{{ x.types }}
-</td>
-<td>
-{{ x.searchedAt }}
-</td>
-</tr>
-{% else %}
-<tr>
-<td colspan="4">
-No history yet.
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
-</div>
-</div>
+<section class="page-shell">
+  <div class="eyebrow">Your recent discoveries</div>
+  <h1 class="section-heading display-5 mt-2">Search history</h1>
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Pokémon</th>
+            <th scope="col">Pokédex number</th>
+            <th scope="col">Types</th>
+            <th scope="col">Searched at</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in history %}
+            <tr>
+              <td>{{ entry.pokemonName }}</td>
+              <td>#{{ '%04d'|format(entry.pokemonId) }}</td>
+              <td class="text-capitalize">{{ entry.types or '—' }}</td>
+              <td>{{ entry.searchedAt }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4" class="text-secondary">
+                No searches yet. Look up a Pokémon to start your history.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 {% endblock %}

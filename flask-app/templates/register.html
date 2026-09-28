@@ -1,30 +1,53 @@
 {% extends 'base.html' %}
-{% block title %}
-Register
-{% endblock %}
+{% block title %}Create account{% endblock %}
 {% block content %}
-<div class="container py-5">
-<div class="row justify-content-center">
-<div class="col-md-5">
-<div class="card p-4">
-<h2>
-Create account
-</h2>
-{% if error %}
-<div class="alert alert-danger">
-{{ error }}
-</div>
-{% endif %}
-<form method="post">
-<input class="form-control mb-3" name="username" placeholder="Username" minlength="3" required>
-<input class="form-control mb-3" type="email" name="email" placeholder="Email" required>
-<input class="form-control mb-3" type="password" name="password" placeholder="Password" minlength="8" required>
-<button class="btn btn-warning w-100">
-Register
-</button>
-</form>
-</div>
-</div>
-</div>
-</div>
+<section class="page-shell auth-wrap">
+  <div class="card">
+    <div class="eyebrow">Keep your discoveries</div>
+    <h1 class="section-heading mt-2">Create an account</h1>
+    {% if error %}
+      <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3">
+        <label class="form-label" for="username">Username</label>
+        <input
+          id="username"
+          class="form-control"
+          name="username"
+          minlength="3"
+          maxlength="40"
+          autocomplete="username"
+          required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          class="form-control"
+          type="email"
+          name="email"
+          maxlength="120"
+          autocomplete="email"
+          required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          class="form-control"
+          type="password"
+          name="password"
+          minlength="8"
+          maxlength="72"
+          autocomplete="new-password"
+          required>
+        <div class="form-text text-secondary">Use 8–72 characters.</div>
+      </div>
+      <button class="btn btn-warning w-100" type="submit">Create account</button>
+    </form>
+  </div>
+</section>
 {% endblock %}

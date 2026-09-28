@@ -8,7 +8,7 @@ __pycache__/
 .env
 
 # Java
-java-backend/target/
+java-backend/target*/
 *.class
 
 # IDE

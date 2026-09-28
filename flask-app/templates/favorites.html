@@ -1,33 +1,34 @@
 {% extends 'base.html' %}
-{% block title %}
-Favorites
-{% endblock %}
+{% block title %}Favorites{% endblock %}
 {% block content %}
-<div class="container py-5">
-<h1>
-Favorites
-</h1>
-<div class="row g-3">
-{% for x in favorites %}
-<div class="col-md-4">
-<div class="card p-3 text-center">
-<img src="{{ x.spriteUrl }}" height="140">
-<h4>
-{{ x.pokemonName }}
-</h4>
-<form method="post" action="{{ url_for('main.favorite',pokemon_id=x.pokemonId) }}">
-<input type="hidden" name="action" value="remove">
-<button class="btn btn-outline-danger">
-Remove
-</button>
-</form>
-</div>
-</div>
-{% else %}
-<p class="text-secondary">
-No favorites yet.
-</p>
-{% endfor %}
-</div>
-</div>
+<section class="page-shell">
+  <div class="eyebrow">Your collection</div>
+  <h1 class="section-heading display-5 mt-2">Favorites</h1>
+  <div class="row g-3">
+    {% for favorite in favorites %}
+      <div class="col-md-4">
+        <article class="card text-center">
+          <img
+            class="pokemon-img"
+            src="{{ favorite.spriteUrl or url_for('static', filename='pokemon-placeholder.svg') }}"
+            alt="{{ favorite.pokemonName }} artwork"
+            loading="lazy">
+          <h2 class="h4 text-capitalize">{{ favorite.pokemonName }}</h2>
+          <div class="eyebrow mb-3">#{{ '%04d'|format(favorite.pokemonId) }}</div>
+          <form method="post" action="{{ url_for('main.favorite', pokemon_id=favorite.pokemonId) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="remove">
+            <button class="btn btn-outline-danger" type="submit">Remove favorite</button>
+          </form>
+        </article>
+      </div>
+    {% else %}
+      <div class="col-12">
+        <div class="empty-state">
+          No favorites yet. Search for a Pokémon and save it here.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}

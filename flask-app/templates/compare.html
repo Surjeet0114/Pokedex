@@ -2,10 +2,80 @@
 {% block title %}Compare{% endblock %}
 {% block content %}
 <section class="page-shell">
-  <div class="eyebrow">Head to head</div><h1 class="section-heading display-5 mt-2">Compare Pokémon</h1>
-  <p class="text-secondary mb-4">Enter two names or Pokédex numbers to see their stats side by side.</p>
-  {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
-  <form method="post" class="card mb-4"><div class="row g-3 align-items-end"><div class="col-md-5"><label class="form-label" for="pokemon1">First Pokémon</label><input id="pokemon1" class="form-control" name="pokemon1" value="{{ query1|default('') }}" placeholder="Pikachu or 25" required></div><div class="col-md-5"><label class="form-label" for="pokemon2">Second Pokémon</label><input id="pokemon2" class="form-control" name="pokemon2" value="{{ query2|default('') }}" placeholder="Eevee or 133" required></div><div class="col-md-2"><button class="btn btn-warning w-100" type="submit">Compare</button></div></div></form>
-  {% if p1 or p2 %}<div class="compare-grid">{% for p in [p1,p2] %}<article class="card compare-card">{% if p %}<div class="eyebrow">#{{ '%04d'|format(p.id) }}</div><h2>{{ p.name }}</h2><img class="pokemon-img" src="{{ p.image_hd or p.image_front or url_for('static', filename='pokemon-placeholder.svg') }}" alt="{{ p.name }} artwork"><div class="mb-3">{% for t in p.types %}<span class="type-badge">{{ t }}</span>{% endfor %}</div>{% for s,v in p.stats.items() %}<div class="stat-row text-start"><div class="stat-label"><span>{{ s|replace('-', ' ') }}</span><b>{{ v }}</b></div><div class="stat-bar"><span style="width:{{ [v / 2.55, 100]|min }}%"></span></div></div>{% endfor %}{% else %}<div class="empty-state my-auto">Couldn’t find this Pokémon. Check the spelling or number and try again.</div>{% endif %}</article>{% endfor %}</div>{% endif %}
+  <div class="eyebrow">Head to head</div>
+  <h1 class="section-heading display-5 mt-2">Compare Pokémon</h1>
+  <p class="text-secondary mb-4">
+    Enter two names or Pokédex numbers to see their stats side by side.
+  </p>
+
+  {% if error %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" class="card mb-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label" for="pokemon1">First Pokémon</label>
+        <input
+          id="pokemon1"
+          class="form-control"
+          name="pokemon1"
+          value="{{ query1|default('') }}"
+          placeholder="Pikachu or 25"
+          required>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label" for="pokemon2">Second Pokémon</label>
+        <input
+          id="pokemon2"
+          class="form-control"
+          name="pokemon2"
+          value="{{ query2|default('') }}"
+          placeholder="Eevee or 133"
+          required>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-warning w-100" type="submit">Compare</button>
+      </div>
+    </div>
+  </form>
+
+  {% if p1 or p2 %}
+    <div class="compare-grid">
+      {% for pokemon in [p1, p2] %}
+        <article class="card compare-card">
+          {% if pokemon %}
+            <div class="eyebrow">#{{ '%04d'|format(pokemon.id) }}</div>
+            <h2>{{ pokemon.name }}</h2>
+            <img
+              class="pokemon-img"
+              src="{{ pokemon.image_hd or pokemon.image_front or url_for('static', filename='pokemon-placeholder.svg') }}"
+              alt="{{ pokemon.name }} artwork">
+            <div class="mb-3">
+              {% for type in pokemon.types %}
+                <span class="type-badge">{{ type }}</span>
+              {% endfor %}
+            </div>
+            {% for name, value in pokemon.stats.items() %}
+              <div class="stat-row text-start">
+                <div class="stat-label">
+                  <span>{{ name|replace('-', ' ') }}</span>
+                  <b>{{ value }}</b>
+                </div>
+                <div class="stat-bar">
+                  <span style="width:{{ [value / 2.55, 100]|min }}%"></span>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state my-auto">
+              Couldn’t find this Pokémon. Check the spelling or number and try again.
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
 </section>
 {% endblock %}

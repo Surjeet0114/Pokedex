@@ -1,22 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}
-Profile
-{% endblock %}
+{% block title %}Profile{% endblock %}
 {% block content %}
-<div class="container py-5">
-<div class="card p-4">
-<h1>
-{{ user.username }}
-</h1>
-<p>
-Email: {{ user.email }}
-</p>
-<p>
-Role: {{ user.role }}
-</p>
-<p>
-Joined: {{ user.createdAt }}
-</p>
-</div>
-</div>
+<section class="page-shell auth-wrap">
+  <div class="card">
+    <div class="eyebrow">Trainer profile</div>
+    <h1 class="section-heading mt-2">{{ user.username }}</h1>
+    <dl class="mb-0">
+      <div class="d-flex justify-content-between gap-3 py-2 border-bottom border-secondary-subtle">
+        <dt class="text-secondary">Email</dt>
+        <dd class="mb-0">{{ user.email }}</dd>
+      </div>
+      <div class="d-flex justify-content-between gap-3 py-2 border-bottom border-secondary-subtle">
+        <dt class="text-secondary">Role</dt>
+        <dd class="mb-0">{{ user.role }}</dd>
+      </div>
+      <div class="d-flex justify-content-between gap-3 py-2">
+        <dt class="text-secondary">Joined</dt>
+        <dd class="mb-0">{{ user.createdAt }}</dd>
+      </div>
+    </dl>
+  </div>
+</section>
 {% endblock %}

@@ -1,26 +1,56 @@
 package com.pokedex.backend.security;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.*;
-import java.util.*;
-@Component public class JwtFilter extends OncePerRequestFilter {
-    final JwtService jwt;
-    public JwtFilter(JwtService j){
-        jwt = j;
+
+@Component
+public class JwtFilter extends OncePerRequestFilter {
+    private static final String BEARER_PREFIX = "Bearer ";
+
+    private final JwtService jwtService;
+
+    public JwtFilter(JwtService jwtService) {
+        this.jwtService = jwtService;
     }
-    protected void doFilterInternal(HttpServletRequest r, HttpServletResponse s, FilterChain c)
-    throws ServletException, IOException {
-        String h = r.getHeader("Authorization");
-        if (h!=null&&h.startsWith("Bearer "))try {
-            String u = jwt.username(h.substring(7));
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(u, null, List.of()));
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
+        SecurityContextHolder.clearContext();
+
+        String authorization = request.getHeader("Authorization");
+        if (authorization != null
+                && authorization.regionMatches(true, 0, BEARER_PREFIX, 0, BEARER_PREFIX.length())) {
+            authenticate(authorization.substring(BEARER_PREFIX.length()).trim());
         }
-        catch(Exception ignored){
+
+        filterChain.doFilter(request, response);
+    }
+
+    private void authenticate(String token) {
+        if (token.isEmpty()) {
+            return;
         }
-        c.doFilter(r, s);
+
+        try {
+            String username = jwtService.username(token);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(username, null, List.of());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JwtException | IllegalArgumentException exception) {
+            SecurityContextHolder.clearContext();
+        }
     }
 }
